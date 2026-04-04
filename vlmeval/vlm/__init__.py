@@ -5,6 +5,7 @@ torch.manual_seed(1234)
 from .aki import AKI
 from .aria import Aria
 from .bagel_umm import Bagel
+from .harmon_umm import Harmon
 from .base import BaseModel
 from .bunnyllama3 import BunnyLLama3
 from .cambrian import Cambrian

@@ -2399,6 +2399,14 @@ covt_series = {
 bagel_series = {
     "BAGEL-7B-MoT": partial(vlm.Bagel, model_path='ByteDance-Seed/BAGEL-7B-MoT'),
 }
+harmon_series = {
+    'Harmon-0_5B': partial(vlm.Harmon,
+                           model_path='wusize/Harmon-0_5B',
+                           variant='Harmon-0.5B'),
+    'Harmon-1_5B': partial(vlm.Harmon,
+                           model_path='wusize/Harmon-1_5B',
+                           variant='Harmon-1.5B'),
+}
 
 spatial_related_models = {
     # 3B models
@@ -2576,7 +2584,7 @@ model_groups = [
 ]
 
 # add by EASI team
-model_groups.extend([bagel_series, spatial_related_models, sensenova_si_series])
+model_groups.extend([bagel_series, harmon_series, spatial_related_models, sensenova_si_series])
 
 for grp in model_groups:
     supported_VLM.update(grp)
