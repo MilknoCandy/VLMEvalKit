@@ -2397,6 +2397,8 @@ covt_series = {
 }
 
 bagel_series = {
+    "BAGEL-Omni-View": partial(vlm.Bagel, model_path='AIDC-AI/Omni-View'),
+    "BAGEL-COOPER-AMG": partial(vlm.Bagel, model_path='Starrrrrry/COOPER-AMG'),
     "BAGEL-7B-MoT": partial(vlm.Bagel, model_path='ByteDance-Seed/BAGEL-7B-MoT'),
 }
 harmon_series = {

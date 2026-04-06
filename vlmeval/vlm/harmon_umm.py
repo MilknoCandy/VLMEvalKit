@@ -53,7 +53,7 @@ def expand2square(pil_img, background_color=(127, 127, 127)):
 
 class Harmon(BaseModel):
     """
-    Harmon: Unified Multimodal Understanding and Generation
+    Harmon: Harmonizing Visual Representations for Unified Multimodal Understanding and Generation
     https://arxiv.org/abs/2503.21979
     """
 
