@@ -20,7 +20,7 @@ MODEL_NAME=LLaVA-OneVision-2-8B-Instruct
 
 MASTER_PORT=19507
 
-TASK=VSI-Bench
+TASK=VSI-Bench_1fps
 
 
 # 限制可见的 GPU 卡（您可以根据实际设备数量调整，这里默认使用 4 张卡）

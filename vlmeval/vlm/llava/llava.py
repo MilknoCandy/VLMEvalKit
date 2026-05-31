@@ -915,12 +915,20 @@ class LLaVA_OneVision_2(BaseModel):
     VIDEO_LLM = True
 
     def __init__(self, model_path="lmms-lab-encoder/LLaVA-OneVision-2-8B-Instruct", **kwargs):
-        from transformers import AutoModelForCausalLM, AutoProcessor
-
+        import sys
+        import torch
+        from transformers import AutoProcessor
+        
+        ov2_impl_path = "/nfs1/SDW/PaperThree/LLaVA-OneVision-2/transformers_impl"
+        if ov2_impl_path not in sys.path:
+            sys.path.insert(0, ov2_impl_path)
+            
+        from llavaonevision2.modeling_llava_onevision2 import LlavaOnevision2ForConditionalGeneration
+        
         assert model_path is not None, "Model path must be provided."
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.model = AutoModelForCausalLM.from_pretrained(
-            model_path, torch_dtype='auto', trust_remote_code=True, device_map='auto')
+        self.model = LlavaOnevision2ForConditionalGeneration.from_pretrained(
+            model_path, torch_dtype='auto', device_map='auto')
         self.processor = AutoProcessor.from_pretrained(model_path, trust_remote_code=True)
 
         self.model_path = model_path
