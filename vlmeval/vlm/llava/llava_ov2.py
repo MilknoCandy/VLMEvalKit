@@ -11,12 +11,22 @@ class LLaVA_OneVision2(BaseModel):
     VIDEO_LLM = True
 
     def __init__(self, model_path="lmms-lab-encoder/LLaVA-OneVision-2-8B-Instruct", **kwargs):
+        import sys
+
         self.model_path = model_path
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-        from transformers import AutoModelForCausalLM, AutoProcessor
+        # Add local reference implementation to path so the model code
+        # (LlavaOnevision2ForConditionalGeneration, Llava_Onevision2Processor)
+        # can be loaded even when the checkpoint does not ship auto_map.
+        ov2_impl = "/nfs1/SDW/PaperThree/LLaVA-OneVision-2/transformers_impl"
+        if ov2_impl not in sys.path:
+            sys.path.insert(0, ov2_impl)
 
-        self.model = AutoModelForCausalLM.from_pretrained(
+        from transformers import AutoProcessor
+        from llavaonevision2 import LlavaOnevision2ForConditionalGeneration
+
+        self.model = LlavaOnevision2ForConditionalGeneration.from_pretrained(
             model_path,
             torch_dtype=torch.float16,
             trust_remote_code=True,
