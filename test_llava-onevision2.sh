@@ -13,8 +13,8 @@ NUM_GPUS=${#GPU_IDS[@]}
 export LMUData=/nfs/SDW/datasets/LMUData
 echo "LMUData path: ${LMUData}"
 
-export HF_HUB_CACHE=/nfs/huggingface_cache
-echo "HF_HUB_CACHE path: ${HF_HUB_CACHE}"
+export HF_HOME=/nfs/huggingface_cache
+echo "HF_HOME path: ${HF_HOME}"
 
 MODEL_NAME=LLaVA-OneVision-2-8B-Instruct
 

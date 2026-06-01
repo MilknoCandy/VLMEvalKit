@@ -1034,7 +1034,7 @@ llava_series = {
         vlm.LLaVA_OneVision_1_5, model_path="lmms-lab/LLaVA-OneVision-1.5-8B-Instruct", max_new_tokens=8192
     ),
     "LLaVA-OneVision-2-8B-Instruct": partial(
-        vlm.LLaVA_OneVision_2, model_path="lmms-lab-encoder/LLaVA-OneVision-2-8B-Instruct", max_new_tokens=8192
+        vlm.LLaVA_OneVision2, model_path="lmms-lab-encoder/LLaVA-OneVision-2-8B-Instruct", max_new_tokens=8192
     ),
 }
 
