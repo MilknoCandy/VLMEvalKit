@@ -15,11 +15,7 @@ class LLaVA_OneVision2(BaseModel):
         import sys
 
         self.model_path = model_path
-
-        # Bind each torchrun process to its own GPU.
-        local_rank = int(os.environ.get('LOCAL_RANK', 0))
-        torch.cuda.set_device(local_rank)
-        self.device = torch.device(f'cuda:{local_rank}')
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
         from transformers import AutoProcessor
         # Add local reference implementation to path so the model code
