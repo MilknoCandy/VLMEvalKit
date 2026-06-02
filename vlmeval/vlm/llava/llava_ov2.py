@@ -1,4 +1,5 @@
 import logging
+import os
 import torch
 from PIL import Image
 from vlmeval.vlm.base import BaseModel
@@ -14,21 +15,37 @@ class LLaVA_OneVision2(BaseModel):
         import sys
 
         self.model_path = model_path
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+        # Bind each torchrun process to its own GPU.
+        local_rank = int(os.environ.get('LOCAL_RANK', 0))
+        torch.cuda.set_device(local_rank)
+        self.device = torch.device(f'cuda:{local_rank}')
 
         from transformers import AutoProcessor
         # Add local reference implementation to path so the model code
         # (LlavaOnevision2ForConditionalGeneration, Llava_Onevision2Processor)
         # can be loaded even when the checkpoint does not ship auto_map.
-        ov2_impl = "/path/to/LLaVA-OneVision-2-main/transformers_impl"
+        ov2_impl = os.environ.get(
+            'LLAVA_OV2_IMPL',
+            '/path/to/LLaVA-OneVision-2/transformers_impl',
+        )
         if ov2_impl not in sys.path:
             sys.path.insert(0, ov2_impl)
 
         from llavaonevision2 import LlavaOnevision2ForConditionalGeneration
 
+        # Auto-detect Flash Attention 2
+        attn_impl = None
+        try:
+            import flash_attn  # noqa: F401
+            attn_impl = 'flash_attention_2'
+        except ImportError:
+            pass
+
         self.model = LlavaOnevision2ForConditionalGeneration.from_pretrained(
             model_path,
-            torch_dtype=torch.float16,
+            torch_dtype=torch.bfloat16,
+            attn_implementation=attn_impl,
             trust_remote_code=True,
             low_cpu_mem_usage=True,
         ).to(self.device)
