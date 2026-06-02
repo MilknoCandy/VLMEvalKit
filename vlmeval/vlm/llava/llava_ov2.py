@@ -14,6 +14,10 @@ class LLaVA_OneVision2(BaseModel):
     def __init__(self, model_path="lmms-lab-encoder/LLaVA-OneVision-2-8B-Instruct", **kwargs):
         import sys
 
+        # Enable TF32 for faster matmul on Ampere+ GPUs
+        torch.backends.cuda.matmul.allow_tf32 = True
+        torch.backends.cudnn.allow_tf32 = True
+
         self.model_path = model_path
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -52,7 +56,7 @@ class LLaVA_OneVision2(BaseModel):
             trust_remote_code=True,
         )
 
-        kwargs.setdefault('max_new_tokens', 4096)
+        kwargs.setdefault('max_new_tokens', 1024)
         self.kwargs = kwargs
 
     def _parse_message(self, message):
@@ -106,8 +110,14 @@ class LLaVA_OneVision2(BaseModel):
 
         inputs = self.processor(**processor_kwargs).to(self.device)
 
-        with torch.inference_mode():
-            generated_ids = self.model.generate(**inputs, **self.kwargs)
+        with torch.inference_mode(), torch.amp.autocast("cuda", dtype=torch.bfloat16):
+            generated_ids = self.model.generate(
+                **inputs,
+                use_cache=True,
+                do_sample=False,
+                pad_token_id=self.processor.tokenizer.pad_token_id or self.processor.tokenizer.eos_token_id,
+                **self.kwargs,
+            )
 
         generated_ids_trimmed = [
             out_ids[len(in_ids):]
