@@ -16,14 +16,14 @@ class LLaVA_OneVision2(BaseModel):
         self.model_path = model_path
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+        from transformers import AutoProcessor
         # Add local reference implementation to path so the model code
         # (LlavaOnevision2ForConditionalGeneration, Llava_Onevision2Processor)
         # can be loaded even when the checkpoint does not ship auto_map.
-        ov2_impl = "/nfs1/SDW/PaperThree/LLaVA-OneVision-2/transformers_impl"
+        ov2_impl = "/path/to/LLaVA-OneVision-2-main/transformers_impl"
         if ov2_impl not in sys.path:
             sys.path.insert(0, ov2_impl)
 
-        from transformers import AutoProcessor
         from llavaonevision2 import LlavaOnevision2ForConditionalGeneration
 
         self.model = LlavaOnevision2ForConditionalGeneration.from_pretrained(
